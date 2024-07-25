@@ -36,6 +36,7 @@
 		"commitizen": "exec < /dev/tty && git cz --hook || true"
 	},
 	"dependencies": {
+		"@hello-pangea/dnd": "^16.6.0",
 		"@hookform/resolvers": "^3.3.4",
 		"@nivo/bar": "^0.84.0",
 		"@nivo/core": "^0.84.0",
@@ -45,8 +46,12 @@
 		"@tanstack/react-router": "^1.15.7",
 		"@tanstack/react-table": "^8.11.7",
 		"@tanstack/router-vite-plugin": "^1.15.4",
+		"@types/react-beautiful-dnd": "^13.1.8",
+		"@types/react-query": "^1.2.9",
+		"axios": "^1.7.2",
 		"dayjs": "^1.11.10",
 		"react": "^18.2.0",
+		"react-beautiful-dnd": "^13.1.1",
 		"react-dom": "^18.2.0",
 		"react-hook-form": "^7.49.3",
 		"zod": "^3.22.4",
