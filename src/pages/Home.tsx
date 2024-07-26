@@ -176,19 +176,11 @@ const Card: React.FC<CardProps> = ({ card, minimized = false }) => {
 	// }
 
 	return (
-		<div className="bg-white border border-gray w-100 h-56 flex flex-col">
-			<div className="flex flex-grow items-center justify-center">
-				<img src={isLoading ? null : images[0] || getBestFavicon(favicons)} />
-			</div>
-			<div
-				className="relative bg-white p-1 text-right group hover:cursor-pointer"
-				onClick={handleClick}
-			>
-				<div className="absolute inset-0 bg-yellow-400 transform translate-x-full group-hover:translate-x-0 group-hover:cursor-pointer transition-transform duration-300 ease-in-out"></div>
-				<p className="relative text-blue-600 text-xs transition-colors duration-300 ease-in-out group-hover:text-black z-10">
-					{stripUrl(card.url)}
-				</p>
-			</div>
+		<div className="bg-white border border-gray w-full h-56 flex items-center justify-center">
+			<img
+				src={isLoading ? null : images[0] || getBestFavicon(favicons)}
+				className="max-w-full max-h-full object-scale-down"
+			/>
 		</div>
 	);
 };
@@ -215,9 +207,9 @@ const ImageGrid: React.FC = () => {
 
 	const cardsData = [
 		...MOCK_CARDS,
-		// ...MOCK_CARDS,
-		// ...MOCK_CARDS,
-		// ...MOCK_CARDS,
+		...MOCK_CARDS,
+		...MOCK_CARDS,
+		...MOCK_CARDS,
 	];
 
 	useEffect(() => {
@@ -353,11 +345,13 @@ const ImageGrid: React.FC = () => {
 					.map((image, index) => (
 						<div
 							key={index}
-							className={`relative overflow-hidden cursor-pointer ${
-								selectedTiles.includes(index)
-									? "ring-4 ring-orange-500 z-10"
-									: ""
-							}`}
+							className={`relative overflow-hidden cursor-pointer bg-red
+								${
+									selectedTiles.includes(index)
+										? "ring-4 ring-theme-green z-10"
+										: "before:absolute before:inset-0 before:bg-[#111A3B] before:bg-opacity-60"
+								}
+							`}
 							onClick={() => {
 								handleTileClick(index);
 							}}

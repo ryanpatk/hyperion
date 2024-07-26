@@ -8,6 +8,9 @@ export default {
 			fontFamily: {
 				sans: ["Inter var", ...defaultTheme.fontFamily.sans],
 			},
+			colors: {
+				"theme-green": "#4FFFB0",
+			},
 		},
 	},
 	plugins: [],
