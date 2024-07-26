@@ -30,6 +30,30 @@ interface ICard {
 	type: ICardType;
 }
 
+const getBestFavicon = (favicons: Array<string>): string | null => {
+	if (!favicons || favicons.length === 0) {
+		return null;
+	}
+
+	const firstChoice = favicons.find((favicon: string): boolean => {
+		return favicon.includes("logo");
+	});
+
+	if (firstChoice) {
+		return firstChoice;
+	}
+
+	const secondChoice = favicons.find((favicon: string): boolean => {
+		return favicon.includes("favicon");
+	});
+
+	if (secondChoice) {
+		return secondChoice;
+	}
+
+	return favicons[0] || null;
+};
+
 const MOCK_PROJECTS: Array<string> = ["Core", "Design", "Development"];
 
 const MOCK_CARDS: Array<ICard> = [
@@ -154,7 +178,7 @@ const Card: React.FC<CardProps> = ({ card, minimized = false }) => {
 	return (
 		<div className="bg-white border border-gray w-100 h-56 flex flex-col">
 			<div className="flex flex-grow items-center justify-center">
-				<img src={isLoading ? null : images[0]} />
+				<img src={isLoading ? null : images[0] || getBestFavicon(favicons)} />
 			</div>
 			<div
 				className="relative bg-white p-1 text-right group hover:cursor-pointer"
@@ -191,9 +215,9 @@ const ImageGrid: React.FC = () => {
 
 	const cardsData = [
 		...MOCK_CARDS,
-		...MOCK_CARDS,
-		...MOCK_CARDS,
-		...MOCK_CARDS,
+		// ...MOCK_CARDS,
+		// ...MOCK_CARDS,
+		// ...MOCK_CARDS,
 	];
 
 	useEffect(() => {
