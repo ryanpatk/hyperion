@@ -1,189 +1,28 @@
 import { useEffect, useCallback, useState } from "react";
-import {
-	DragDropContext,
-	Droppable,
-	Draggable,
-	type DropResult,
-	// type DraggableLocation,
-	// type DraggableStateSnapshot,
-	// type DroppableStateSnapshot,
-	// type DraggableProvided,
-	// type DroppableProvided,
-} from "@hello-pangea/dnd";
+// import {
+// 	DragDropContext,
+// 	Droppable,
+// 	Draggable,
+// 	type DropResult,
+// 	// type DraggableLocation,
+// 	// type DraggableStateSnapshot,
+// 	// type DroppableStateSnapshot,
+// 	// type DraggableProvided,
+// 	// type DroppableProvided,
+// } from "@hello-pangea/dnd";
 
 import defaultTheme from "tailwindcss/defaultTheme";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 
-import stripUrl from "../utils/strip-url";
+import Tile from "../components/Tile";
 
-enum ICardType {
-	link = "link",
-	image = "image",
-	note = "note",
-}
-
-interface ICard {
-	id: string;
-	url: string;
-	image: string | null;
-	type: ICardType;
-}
-
-const getBestFavicon = (favicons: Array<string>): string | null => {
-	if (!favicons || favicons.length === 0) {
-		return null;
-	}
-
-	const firstChoice = favicons.find((favicon: string): boolean => {
-		return favicon.includes("logo");
-	});
-
-	if (firstChoice) {
-		return firstChoice;
-	}
-
-	const secondChoice = favicons.find((favicon: string): boolean => {
-		return favicon.includes("favicon");
-	});
-
-	if (secondChoice) {
-		return secondChoice;
-	}
-
-	return favicons[0] || null;
-};
-
-const MOCK_PROJECTS: Array<string> = ["Core", "Design", "Development"];
-
-const MOCK_CARDS: Array<ICard> = [
-	{
-		id: "tile-1",
-		url: "https://my.brain.fm",
-		image: null,
-		type: ICardType.link,
-	},
-	{
-		id: "tile-2",
-		url: "https://www.chatgpt.com",
-		image: null,
-		type: ICardType.link,
-	},
-	{
-		id: "tile-3",
-		url: "https://claude.ai",
-		image: null,
-		type: ICardType.link,
-	},
-	{
-		id: "tile-4",
-		url: "https://access.mymind.com",
-		image: null,
-		type: ICardType.link,
-	},
-	{
-		id: "tile-5",
-		url: "https://docs.nestjs.com/recipes/passport",
-		image: null,
-		type: ICardType.link,
-	},
-	{
-		id: "tile-6",
-		url: "https://tailwindcss.com/docs/width",
-		image: null,
-		type: ICardType.link,
-	},
-	{
-		id: "tile-7",
-		url: "https://github.com/ryanpatk/chronos",
-		image: null,
-		type: ICardType.link,
-	},
-	{
-		id: "tile-8",
-		url: "www.gmail.com",
-		image: null,
-		type: ICardType.link,
-	},
-	{
-		id: "tile-9",
-		url: "https://x.com/terminaldotshop/status/1802905043688989090",
-		image: null,
-		type: ICardType.link,
-	},
-];
-
-interface CardProps {
-	card: ICard;
-	minimized?: boolean;
-}
+// Temporary for UI scaffolding; replace with actual data
+import { MOCK_TILES } from "../mocks";
 
 // const openAllLinksInActiveGroup = () => {
 // 	for (let i = 0; i < filteredLinks.length; i++) {
 // 		openLink(filteredLinks[i]);
 // 	}
 // };
-
-/**
- * opening a new tab as a background tab is not currently possible.
- * note that this behavior would be ideal if at all possible.
- */
-function openLink(url: string): void {
-	if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
-		window.open(url, "_blank");
-	} else {
-		window.open(`http://${link.url}`, "_blank");
-	}
-}
-
-interface MyData {
-	id: number;
-	name: string;
-	// Add more properties as needed
-}
-
-const fetchUrlData = async (url: string): Promise<Array<MyData>> => {
-	const response = await axios.get<Array<MyData>>(
-		`http://localhost:3000/url-scraper?&url=${encodeURIComponent(url)}`
-	);
-
-	return response.data;
-};
-
-const Card: React.FC<CardProps> = ({ card, minimized = false }) => {
-	const { data, isLoading } = useQuery({
-		queryKey: ["url_data", card.url],
-		queryFn: () => fetchUrlData(card.url),
-	});
-
-	const { favicons = [], images = [] } = data || {};
-
-	const handleClick = (): void => {
-		openLink(card.url);
-	};
-
-	// if (minimized) {
-	// 	return (
-	// 		<div className="text-left mb-1">
-	// 			<div className="bg-blue-200 rounded-lg shadow-sm w-18 h-14 flex flex-col overflow-hidden justify-center items-center text-center ">
-	// 				<img className="h-5 w-5" src={isLoading ? null : favicons[0]} />
-	// 			</div>
-	// 			<p className="relative pt-1 text-gray-400 text-xs transition-colors duration-300 ease-in-out group-hover:text-white z-10 overflow-hidden text-ellipsis whitespace-nowrap w-full">
-	// 				{isLoading ? "" : stripUrl(card.url)}
-	// 			</p>
-	// 		</div>
-	// 	);
-	// }
-
-	return (
-		<div className="bg-white border border-gray w-full h-56 flex items-center justify-center">
-			<img
-				src={isLoading ? null : images[0] || getBestFavicon(favicons)}
-				className="max-w-full max-h-full object-scale-down"
-			/>
-		</div>
-	);
-};
 
 // const AddItemCard: React.FC = () => {
 // 	return (
@@ -205,11 +44,11 @@ const ImageGrid: React.FC = () => {
 	const [gridSize, setGridSize] = useState<GridSize>({ rows: 0, cols: 0 });
 	const [isDragging, setIsDragging] = useState(false);
 
-	const cardsData = [
-		...MOCK_CARDS,
-		...MOCK_CARDS,
-		...MOCK_CARDS,
-		...MOCK_CARDS,
+	const tilesData = [
+		...MOCK_TILES,
+		...MOCK_TILES,
+		...MOCK_TILES,
+		...MOCK_TILES,
 	];
 
 	useEffect(() => {
@@ -340,9 +179,9 @@ const ImageGrid: React.FC = () => {
 					gridTemplateRows: `repeat(${gridSize.rows}, 1fr)`,
 				}}
 			>
-				{cardsData
+				{tilesData
 					.slice(0, gridSize.rows * gridSize.cols)
-					.map((image, index) => (
+					.map((tile, index) => (
 						<div
 							key={index}
 							className={`relative overflow-hidden cursor-pointer bg-red
@@ -362,7 +201,7 @@ const ImageGrid: React.FC = () => {
 								handleMouseEnter(index);
 							}}
 						>
-							<Card card={image} />
+							<Tile tile={tile} />
 						</div>
 					))}
 			</div>
