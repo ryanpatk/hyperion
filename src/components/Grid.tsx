@@ -1,11 +1,10 @@
 import { useEffect, useCallback, useState, type FC } from "react";
 
 import Tile from "../components/Tile";
+import type { ITile } from "../types";
 
 // Temporary for UI scaffolding; replace with actual data
 import { MOCK_TILES } from "../mocks";
-
-import type { ITile } from "../types";
 
 interface GridProps {
 	tiles?: Array<ITile>;
@@ -18,7 +17,7 @@ interface GridSize {
 
 const NUM_COLUMNS = 6;
 
-const MOCK_DATA = [...MOCK_TILES, ...MOCK_TILES, ...MOCK_TILES, ...MOCK_TILES];
+const MOCK_DATA = [...MOCK_TILES, ...MOCK_TILES];
 
 const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
 	const [selectedTiles, setSelectedTiles] = useState<Array<number>>([0]);
@@ -58,26 +57,28 @@ const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
 			direction: "up" | "down" | "left" | "right",
 			isMultiSelect: boolean
 		): void => {
-			const { rows, cols } = gridSize;
+			const { cols } = gridSize;
+			const maxIndex = tiles.length - 1;
+
 			setSelectedTiles((previousSelected) => {
-				const lastSelected = previousSelected.at(-1);
+				const lastSelected = previousSelected.at(-1) ?? 0;
 				let newIndex: number;
 
 				switch (direction) {
 					case "right": {
-						newIndex = (lastSelected + 1) % (rows * cols);
+						newIndex = (lastSelected + 1) % (maxIndex + 1);
 						break;
 					}
 					case "left": {
-						newIndex = (lastSelected - 1 + rows * cols) % (rows * cols);
+						newIndex = (lastSelected - 1 + (maxIndex + 1)) % (maxIndex + 1);
 						break;
 					}
 					case "down": {
-						newIndex = (lastSelected + cols) % (rows * cols);
+						newIndex = (lastSelected + cols) % (maxIndex + 1);
 						break;
 					}
 					case "up": {
-						newIndex = (lastSelected - cols + rows * cols) % (rows * cols);
+						newIndex = (lastSelected - cols + (maxIndex + 1)) % (maxIndex + 1);
 						break;
 					}
 				}
@@ -85,14 +86,14 @@ const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
 				return isMultiSelect ? [...previousSelected, newIndex] : [newIndex];
 			});
 		},
-		[gridSize]
+		[gridSize, tiles.length]
 	);
 
 	useEffect(() => {
-		const handleKeyDown = (e: KeyboardEvent): void => {
-			const isMultiSelect = e.metaKey || e.ctrlKey;
+		const handleKeyDown = (event: KeyboardEvent): void => {
+			const isMultiSelect = event.metaKey || event.ctrlKey;
 
-			switch (e.key) {
+			switch (event.key) {
 				case "ArrowRight": {
 					moveSelection("right", isMultiSelect);
 					break;
