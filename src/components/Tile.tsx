@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 import getBestFavicon from "../helpers/get-best-favicon";
-import openLink from "../utils/open-link";
+// import openLink from "../utils/open-link";
 
 import type { ITile } from "../types";
 
