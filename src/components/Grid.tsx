@@ -1,5 +1,17 @@
 import { useEffect, useCallback, useState, type FC } from "react";
 
+// import {
+// 	DragDropContext,
+// 	Droppable,
+// 	Draggable,
+// 	type DropResult,
+// 	// type DraggableLocation,
+// 	// type DraggableStateSnapshot,
+// 	// type DroppableStateSnapshot,
+// 	// type DraggableProvided,
+// 	// type DroppableProvided,
+// } from "@hello-pangea/dnd";
+
 import Tile from "../components/Tile";
 import type { ITile } from "../types";
 

@@ -1,14 +1,28 @@
 import { useState, type FC } from "react";
+import { useNavigate } from "@tanstack/react-router";
+
+import Button from "../components/Button";
+import { useLogin } from "../hooks/auth";
 
 export const Login: FC = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
+	const { isPending, mutate: login } = useLogin();
+	const navigate = useNavigate();
+
 	const handleSubmit = (event: React.FormEvent): void => {
 		event.preventDefault();
-
-		// Handle login logic here
-		console.log("Login submitted", { username, password });
+		// Move the void expression to its own statement
+		login(
+			{ username, password },
+			{
+				onSuccess: () => {
+					void navigate({ to: "/home" });
+				},
+				onError: () => {},
+			}
+		);
 	};
 
 	return (
@@ -40,12 +54,9 @@ export const Login: FC = () => {
 							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-theme-orange"
 						/>
 					</div>
-					<button
-						type="submit"
-						className="w-full py-2 text-white bg-gray-400 rounded-md hover:bg-theme-orange focus:outline-none focus:ring-2 focus:ring-theme-orange focus:bg-theme-orange focus:ring-offset-2"
-					>
+					<Button isLoading={isPending} onClick={() => {}} type="submit">
 						Log In
-					</button>
+					</Button>
 				</form>
 			</div>
 		</div>
