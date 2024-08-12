@@ -52,7 +52,7 @@ const Tile: React.FC<TileProps> = ({ tile }) => {
 	// }
 
 	return (
-		<div className="bg-white border border-gray w-full h-56 flex items-center justify-center">
+		<div className="border border-gray w-full h-56 flex items-center justify-center">
 			<img
 				src={isLoading ? null : images[0] || getBestFavicon(favicons)}
 				className="max-w-full max-h-full object-scale-down"

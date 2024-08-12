@@ -10,6 +10,7 @@ export default {
 			},
 			colors: {
 				"theme-green": "#4FFFB0",
+				"theme-orange": "#FF4D00",
 			},
 		},
 	},

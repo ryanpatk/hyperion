@@ -15,14 +15,30 @@ interface GridSize {
 	cols: number;
 }
 
+const DIRECTIONAL_KEYS = new Set([
+	"ArrowRight",
+	"ArrowLeft",
+	"ArrowDown",
+	"ArrowUp",
+]);
 const NUM_COLUMNS = 6;
-
 const MOCK_DATA = [...MOCK_TILES, ...MOCK_TILES];
+const MAX_VISIBLE_TILES = 30;
 
 const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
 	const [selectedTiles, setSelectedTiles] = useState<Array<number>>([0]);
 	const [gridSize, setGridSize] = useState<GridSize>({ rows: 0, cols: 0 });
 	const [isDragging, setIsDragging] = useState(false);
+
+	const numberEmptyTilesToAppend =
+		tiles.length < MAX_VISIBLE_TILES
+			? MAX_VISIBLE_TILES - tiles.length
+			: 6 - (tiles.length % 6);
+	const emptyTiles = Array.from(
+		{ length: numberEmptyTilesToAppend },
+		() => ({})
+	);
+	const tilesFilled = [...tiles, ...emptyTiles];
 
 	useEffect(() => {
 		const handleResize = (): void => {
@@ -92,6 +108,12 @@ const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent): void => {
 			const isMultiSelect = event.metaKey || event.ctrlKey;
+			const isDirectionalKey = DIRECTIONAL_KEYS.has(event.key);
+
+			// Prevent default browser behavior for these keys when modifier is pressed
+			if (isMultiSelect && isDirectionalKey) {
+				event.preventDefault();
+			}
 
 			switch (event.key) {
 				case "ArrowRight": {
@@ -146,37 +168,36 @@ const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
 	}, []);
 
 	return (
-		<div className="w-screen h-screen overflow-hidden">
-			<div
-				className="grid w-full h-full"
-				style={{
-					gridTemplateColumns: `repeat(${gridSize.cols}, 1fr)`,
-					gridTemplateRows: `repeat(${gridSize.rows}, 1fr)`,
-				}}
-			>
-				{tiles.slice(0, gridSize.rows * gridSize.cols).map((tile, index) => (
-					<div
-						key={index}
-						className={`relative overflow-hidden cursor-pointer bg-red
+		<div className="w-4/5 aspect-[6/5] max-w-4xl max-h-[90vh] overflow-auto">
+			<div className="grid grid-cols-6 grid-rows-5 gap-2 p-2 h-full">
+				{tilesFilled.map((tile, index) => {
+					const isEmptyTile = Object.keys(tile).length === 0;
+					return (
+						<div
+							key={index}
+							className={`relative overflow-hidden cursor-pointer
 								${
-									selectedTiles.includes(index)
-										? "ring-4 ring-theme-green z-10"
-										: "before:absolute before:inset-0 before:bg-[#111A3B] before:bg-opacity-60"
+									isEmptyTile
+										? "bg-gray-200"
+										: selectedTiles.includes(index)
+											? "ring-4 ring-theme-orange z-10"
+											: "before:absolute before:inset-0 before:bg-[#111A3B] before:bg-opacity-60"
 								}
 							`}
-						onClick={() => {
-							handleTileClick(index);
-						}}
-						onMouseDown={() => {
-							handleMouseDown(index);
-						}}
-						onMouseEnter={() => {
-							handleMouseEnter(index);
-						}}
-					>
-						<Tile tile={tile} />
-					</div>
-				))}
+							onClick={() => {
+								handleTileClick(index);
+							}}
+							onMouseDown={() => {
+								handleMouseDown(index);
+							}}
+							onMouseEnter={() => {
+								handleMouseEnter(index);
+							}}
+						>
+							<Tile tile={tile} />
+						</div>
+					);
+				})}
 			</div>
 		</div>
 	);

@@ -26,36 +26,35 @@ import Grid from "../components/Grid";
 // 	);
 // };
 
+// Left Sidebar
+// <div className="w-36 p-2 text-left"></div>
+
+// Right Sidebar
+// <div className="w-96 text-black ml-4 p-2 text-right">
+// <div className="mt-12 mx-1 mb-2 h-10 bg-blue-200 rounded-lg"></div>
+// <div className="mt-2 mx-1 mb-2 h-10 border-b border-black text-left flex items-center">
+// 		<p className="ml-2">Search...</p>
+// 	</div>
+
+// <div className="mt-4 grid grid-cols-4 gap-1 px-2 h-full overflow-y-scroll">
+// 		{[...MOCK_CARDS, ...MOCK_CARDS, ...MOCK_CARDS, ...MOCK_CARDS].map(
+// 			(card) => {
+// 				return (
+// 					<div key={card.id}>
+// 						<Card minimized card={card} />
+// 					</div>
+// 				);
+// 			}
+// 		)}
+// 	</div>
+// </div>
+
 export const Home: React.FC = () => {
 	return (
-		<div className="flex bg-blue-600 w-full h-screen overflow-hidden">
-			{/* Left Sidebar */}
-			{/* <div className="w-36 p-2 text-left"></div> */}
-
-			{/* Main App Area */}
-			<div className="flex w-full my-4 flex-col text-center">
-				<Grid />
-			</div>
-
-			{/* Right Sidebar */}
-			{/* <div className="w-96 text-black ml-4 p-2 text-right"> */}
-			{/* <div className="mt-12 mx-1 mb-2 h-10 bg-blue-200 rounded-lg"></div> */}
-			{/* <div className="mt-2 mx-1 mb-2 h-10 border-b border-black text-left flex items-center">
-					<p className="ml-2">Search...</p>
-				</div> */}
-
-			{/* <div className="mt-4 grid grid-cols-4 gap-1 px-2 h-full overflow-y-scroll">
-					{[...MOCK_CARDS, ...MOCK_CARDS, ...MOCK_CARDS, ...MOCK_CARDS].map(
-						(card) => {
-							return (
-								<div key={card.id}>
-									<Card minimized card={card} />
-								</div>
-							);
-						}
-					)}
-				</div> */}
-			{/* </div> */}
+		<div className="flex items-center justify-center w-full h-screen bg-gray-100">
+			{/* left column area */}
+			<Grid />
+			{/* right column area */}
 		</div>
 	);
 };
