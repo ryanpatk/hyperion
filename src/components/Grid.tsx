@@ -180,14 +180,13 @@ const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
 	}, []);
 
 	return (
-		<div className="w-4/5 aspect-[6/5] max-w-4xl max-h-[90vh] overflow-auto">
-			<div className="grid grid-cols-6 grid-rows-5 gap-2 p-2 h-full">
-				{tilesFilled.map((tile, index) => {
-					const isEmptyTile = Object.keys(tile).length === 0;
-					return (
-						<div
-							key={index}
-							className={`relative overflow-hidden cursor-pointer
+		<div className="grid grid-cols-6 grid-rows-5 h-full">
+			{tilesFilled.map((tile, index) => {
+				const isEmptyTile = Object.keys(tile).length === 0;
+				return (
+					<div
+						key={index}
+						className={`relative overflow-hidden cursor-pointer
 								${
 									isEmptyTile
 										? "bg-gray-200"
@@ -196,21 +195,20 @@ const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
 											: "before:absolute before:inset-0 before:bg-[#111A3B] before:bg-opacity-60"
 								}
 							`}
-							onClick={() => {
-								handleTileClick(index);
-							}}
-							onMouseDown={() => {
-								handleMouseDown(index);
-							}}
-							onMouseEnter={() => {
-								handleMouseEnter(index);
-							}}
-						>
-							<Tile tile={tile} />
-						</div>
-					);
-				})}
-			</div>
+						onClick={() => {
+							handleTileClick(index);
+						}}
+						onMouseDown={() => {
+							handleMouseDown(index);
+						}}
+						onMouseEnter={() => {
+							handleMouseEnter(index);
+						}}
+					>
+						<Tile tile={tile} />
+					</div>
+				);
+			})}
 		</div>
 	);
 };
