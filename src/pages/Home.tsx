@@ -1,7 +1,9 @@
-import type { MouseEvent } from "react";
+import type { MouseEvent, FC } from "react";
 
 import Grid from "../components/Grid";
+import LeftColumn from "../components/LeftColumn";
 import { useMyProfile, useLogout } from "../hooks/auth";
+import { useSpaces } from "../hooks/spaces";
 
 // const openAllLinksInActiveGroup = () => {
 // 	for (let i = 0; i < filteredLinks.length; i++) {
@@ -9,8 +11,9 @@ import { useMyProfile, useLogout } from "../hooks/auth";
 // 	}
 // };
 
-export const Home: React.FC = () => {
+export const Home: FC = () => {
 	const { data: myProfile } = useMyProfile();
+	const { data: spaces } = useSpaces();
 	const logout = useLogout();
 
 	const handleLogout = (event: MouseEvent<HTMLAnchorElement>): void => {
@@ -23,7 +26,9 @@ export const Home: React.FC = () => {
 	return (
 		<div className="flex w-full h-screen bg-gray-100">
 			{/* left column area */}
-			<div className="flex-1 basis-0 min-w-[200px] h-full"></div>
+			<div className="flex-1 basis-0 min-w-[200px] h-full">
+				<LeftColumn spaces={spaces} />
+			</div>
 
 			<div className="flex items-center justify-center p-4">
 				<div className="w-full aspect-[6/5] max-w-4xl max-h-[90vh] overflow-auto shadow-md">
@@ -42,7 +47,7 @@ export const Home: React.FC = () => {
 						onClick={handleLogout}
 						className="text-gray-500 hover:text-gray-700 cursor-pointer"
 					>
-						Logout
+						<b>Logout</b>
 					</a>
 				</div>
 			</div>

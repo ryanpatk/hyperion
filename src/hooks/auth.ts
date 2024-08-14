@@ -53,7 +53,7 @@ export function useLogin(): UseMutationResult<
 			localStorage.setItem("token", data.access_token);
 		},
 		onError: (error) => {
-			console.error("Login failed:", error);
+			console.error("login failed:", error);
 		},
 	});
 }

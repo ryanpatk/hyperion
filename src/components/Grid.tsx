@@ -14,8 +14,6 @@ import { useEffect, useCallback, useState, type FC } from "react";
 
 import Tile from "../components/Tile";
 import type { ITile } from "../types";
-
-// Temporary for UI scaffolding; replace with actual data
 import { MOCK_TILES } from "../mocks";
 
 interface GridProps {
@@ -55,6 +53,7 @@ const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
 	useEffect(() => {
 		const handleResize = (): void => {
 			const aspectRatio = 1.5;
+
 			const vw = Math.max(
 				document.documentElement.clientWidth || 0,
 				window.innerWidth || 0
@@ -66,7 +65,6 @@ const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
 
 			const itemWidth = Math.floor(vw / NUM_COLUMNS);
 			const itemHeight = Math.floor(itemWidth / aspectRatio);
-
 			const cols = Math.floor(vw / itemWidth);
 			const rows = Math.floor(vh / itemHeight);
 
