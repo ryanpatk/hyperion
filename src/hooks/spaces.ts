@@ -32,7 +32,7 @@ async function fetchSpaces(): Promise<Array<SpaceResponse>> {
 
 async function createSpace(newSpaceData: NewSpaceData): Promise<SpaceResponse> {
 	const response = await axiosInstance.post<SpaceResponse>(
-		"/auth/login",
+		"/spaces",
 		newSpaceData
 	);
 	return response.data;
@@ -56,16 +56,16 @@ export function useCreateSpace(): UseMutationResult<
 		mutationFn: createSpace,
 		onMutate: async (newSpace) => {
 			// Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-			await queryClient.cancelQueries({ queryKey: [queryKeys.spaces] });
+			await queryClient.cancelQueries({ queryKey: queryKeys.spaces });
 
 			// Snapshot the previous value
-			const previousSpaces = queryClient.getQueryData<Array<SpaceResponse>>([
-				queryKeys.spaces,
-			]);
+			const previousSpaces = queryClient.getQueryData<Array<SpaceResponse>>(
+				queryKeys.spaces
+			);
 
-			// Optimistically update to the new value
+			// Appends an optimistic value to the cache
 			queryClient.setQueryData<Array<SpaceResponse>>(
-				[queryKeys.spaces],
+				queryKeys.spaces,
 				(old) => {
 					const optimisticSpace: SpaceResponse = {
 						...newSpace,
@@ -81,29 +81,24 @@ export function useCreateSpace(): UseMutationResult<
 			// Return a context object with the snapshotted value
 			return { previousSpaces };
 		},
-		onSuccess: (data: SpaceResponse) => {
-			// Instead of invalidating, we can update the query data directly
-			queryClient.setQueryData<Array<SpaceResponse>>(
-				[queryKeys.spaces],
-				(old) => {
-					// Remove the optimistic entry and add the real one
-					const filteredOld = old
-						? old.filter((space) => space.id !== data.id)
-						: [];
-					return [...filteredOld, data];
-				}
-			);
+		onSuccess: (data: SpaceResponse, _variables, context) => {
+			// Testing new method of ignoring the optimistic response,
+			// append the server-generated data directly to the original cache value
+			queryClient.setQueryData<Array<SpaceResponse>>(queryKeys.spaces, () => {
+				return context.previousSpaces
+					? [...context.previousSpaces, data]
+					: [data];
+			});
 		},
 		onError: (error, _newSpace, context) => {
 			console.error("create-space failed:", error);
 			// If the mutation fails, use the context returned from onMutate to roll back
 			if (context?.previousSpaces) {
-				queryClient.setQueryData([queryKeys.spaces], context.previousSpaces);
+				queryClient.setQueryData(queryKeys.spaces, context.previousSpaces);
 			}
 		},
 		onSettled: () => {
-			// Always refetch after error or success:
-			void queryClient.invalidateQueries({ queryKey: [queryKeys.spaces] });
+			void queryClient.invalidateQueries({ queryKey: queryKeys.spaces });
 		},
 	});
 }

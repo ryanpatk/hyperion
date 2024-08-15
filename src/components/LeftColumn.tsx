@@ -1,7 +1,7 @@
 import { useState, type FC } from "react";
 
 import ExpandableInput from "./ExpandableInput";
-import type { SpaceResponse } from "../hooks/spaces";
+import { useCreateSpace, type SpaceResponse } from "../hooks/spaces";
 
 interface LeftColumnProps {
 	spaces: Array<SpaceResponse> | undefined;
@@ -11,6 +11,8 @@ const LeftColumn: FC<LeftColumnProps> = ({ spaces = [] }) => {
 	const [selectedSpace, setSelectedSpace] = useState<SpaceResponse | null>(
 		null
 	);
+
+	const { mutateAsync: createSpace } = useCreateSpace();
 
 	return (
 		<div className="flex flex-col h-full py-4 pl-4">
@@ -49,7 +51,11 @@ const LeftColumn: FC<LeftColumnProps> = ({ spaces = [] }) => {
 							</button>
 						</li>
 					))}
-				<ExpandableInput onSubmit={() => {}} />
+				<ExpandableInput
+					onSubmit={(value: string): void => {
+						void createSpace({ name: value });
+					}}
+				/>
 			</ul>
 		</div>
 	);
