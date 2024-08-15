@@ -1,7 +1,7 @@
 import { useState, type FC } from "react";
 
 import ExpandableInput from "./ExpandableInput";
-import { useCreateSpace, type SpaceResponse } from "../hooks/spaces";
+import { useCreateSpace, type SpaceResponse } from "../hooks/spaces-api";
 
 interface LeftColumnProps {
 	spaces: Array<SpaceResponse> | undefined;

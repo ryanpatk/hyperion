@@ -1,9 +1,13 @@
-import type { MouseEvent, FC } from "react";
+import { useEffect, type MouseEvent, type FC } from "react";
 
 import Grid from "../components/Grid";
 import LeftColumn from "../components/LeftColumn";
-import { useMyProfile, useLogout } from "../hooks/auth";
-import { useSpaces } from "../hooks/spaces";
+import { useMyProfile, useLogout } from "../hooks/auth-api";
+import { useSpaces } from "../hooks/spaces-api";
+import { usePastedValue } from "../hooks/keyboard";
+import { useCreateLink } from "../hooks/links-api";
+import { usePrevious } from "../hooks/general";
+import isValidUrl from "../utils/is-valid-url";
 
 // const openAllLinksInActiveGroup = () => {
 // 	for (let i = 0; i < filteredLinks.length; i++) {
@@ -15,6 +19,19 @@ export const Home: FC = () => {
 	const { data: myProfile } = useMyProfile();
 	const { data: spaces } = useSpaces();
 	const logout = useLogout();
+
+	const { pastedValue, clearPastedValue } = usePastedValue();
+	const previousPastedValue = usePrevious(pastedValue);
+	const { mutate: createLink } = useCreateLink();
+
+	useEffect(() => {
+		if (pastedValue && !previousPastedValue) {
+			if (isValidUrl(pastedValue)) {
+				createLink({ url: pastedValue });
+			}
+			clearPastedValue();
+		}
+	}, [pastedValue, createLink, clearPastedValue, previousPastedValue]);
 
 	const handleLogout = (event: MouseEvent<HTMLAnchorElement>): void => {
 		event.preventDefault();

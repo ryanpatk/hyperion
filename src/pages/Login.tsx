@@ -2,7 +2,7 @@ import { useState, type FC } from "react";
 import { useNavigate } from "@tanstack/react-router";
 
 import Button from "../components/Button";
-import { useLogin } from "../hooks/auth";
+import { useLogin } from "../hooks/auth-api";
 
 export const Login: FC = () => {
 	const [username, setUsername] = useState("");
