@@ -30,7 +30,7 @@ const Tile: React.FC<TileProps> = ({ tile }) => {
 	const { data, isLoading } = useQuery({
 		queryKey: ["url_data", tile.url],
 		queryFn: () => fetchUrlData(tile.url),
-		enabled: false,
+		// enabled: false,
 	});
 
 	const { favicons = [], images = [] } = data || {};

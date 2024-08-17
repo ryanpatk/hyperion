@@ -1,11 +1,11 @@
-import { useEffect, type MouseEvent, type FC } from "react";
+import { useEffect, useState, useMemo, type MouseEvent, type FC } from "react";
 
 import Grid from "../components/Grid";
-import LeftColumn from "../components/LeftColumn";
+import SpacesList from "../components/SpacesList";
 import { useMyProfile, useLogout } from "../hooks/auth-api";
-import { useSpaces } from "../hooks/spaces-api";
+import { useSpaces, type SpaceResponse } from "../hooks/spaces-api";
 import { usePastedValue } from "../hooks/keyboard";
-import { useCreateLink } from "../hooks/links-api";
+import { useCreateLink, useLinks, type LinkResponse } from "../hooks/links-api";
 import { usePrevious } from "../hooks/general";
 import isValidUrl from "../utils/is-valid-url";
 
@@ -15,14 +15,38 @@ import isValidUrl from "../utils/is-valid-url";
 // 	}
 // };
 
+const UNSORTED_SPACE: SpaceResponse = {
+	id: 0,
+	name: "Unsorted",
+};
+
 export const Home: FC = () => {
+	const [selectedSpaceId, setSelectedSpaceId] = useState<number | null>(0);
 	const { data: myProfile } = useMyProfile();
 	const { data: spaces } = useSpaces();
-	const logout = useLogout();
-
+	const { data: links } = useLinks();
+	const { mutate: createLink } = useCreateLink();
 	const { pastedValue, clearPastedValue } = usePastedValue();
 	const previousPastedValue = usePrevious(pastedValue);
-	const { mutate: createLink } = useCreateLink();
+	const logout = useLogout();
+
+	const spacesWithUnsorted = useMemo((): Array<SpaceResponse> => {
+		return [UNSORTED_SPACE, ...(spaces || [])];
+	}, [spaces]);
+
+	const linksForSpace = useMemo((): Array<LinkResponse> => {
+		if (!links) {
+			return [];
+		}
+
+		return links.filter((link: LinkResponse): boolean => {
+			// special case for unsorted links
+			if (selectedSpaceId === 0) {
+				return !link.spaceId;
+			}
+			return link.spaceId === selectedSpaceId;
+		});
+	}, [links, selectedSpaceId]);
 
 	useEffect(() => {
 		if (pastedValue && !previousPastedValue) {
@@ -44,12 +68,16 @@ export const Home: FC = () => {
 		<div className="flex w-full h-screen bg-gray-100">
 			{/* left column area */}
 			<div className="flex-1 basis-0 min-w-[200px] h-full">
-				<LeftColumn spaces={spaces} />
+				<SpacesList
+					spaces={spacesWithUnsorted}
+					selectedSpaceId={selectedSpaceId}
+					setSelectedSpaceId={setSelectedSpaceId}
+				/>
 			</div>
 
 			<div className="flex items-center justify-center p-4">
 				<div className="w-full aspect-[6/5] max-w-4xl max-h-[90vh] overflow-auto shadow-md">
-					<Grid />
+					<Grid links={linksForSpace} />
 				</div>
 			</div>
 

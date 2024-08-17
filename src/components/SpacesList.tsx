@@ -1,18 +1,27 @@
-import { useState, type FC } from "react";
+import { useMemo, type FC } from "react";
 
 import ExpandableInput from "./ExpandableInput";
 import { useCreateSpace, type SpaceResponse } from "../hooks/spaces-api";
 
-interface LeftColumnProps {
+interface SpacesListProps {
 	spaces: Array<SpaceResponse> | undefined;
+	selectedSpaceId: number | null;
+	setSelectedSpaceId: (spaceId: number | null) => void;
 }
 
-const LeftColumn: FC<LeftColumnProps> = ({ spaces = [] }) => {
-	const [selectedSpace, setSelectedSpace] = useState<SpaceResponse | null>(
-		null
-	);
-
+const SpacesList: FC<SpacesListProps> = ({
+	spaces = [],
+	selectedSpaceId,
+	setSelectedSpaceId,
+}) => {
 	const { mutateAsync: createSpace } = useCreateSpace();
+
+	const selectedSpace = useMemo((): SpaceResponse | null => {
+		if (!selectedSpaceId || !spaces?.length) {
+			return null;
+		}
+		return spaces.find((space) => space?.id === selectedSpaceId) || null;
+	}, [selectedSpaceId, spaces]);
 
 	return (
 		<div className="flex flex-col h-full py-4 pl-4">
@@ -23,7 +32,7 @@ const LeftColumn: FC<LeftColumnProps> = ({ spaces = [] }) => {
 						<button
 							className="w-full text-left px-4 py-2 rounded-sm transition-colors bg-theme-orange text-white"
 							onClick={() => {
-								setSelectedSpace(null);
+								setSelectedSpaceId(null);
 							}}
 						>
 							{selectedSpace.name}
@@ -39,12 +48,12 @@ const LeftColumn: FC<LeftColumnProps> = ({ spaces = [] }) => {
 							<button
 								className={`w-full text-left px-4 py-2 rounded-sm transition-colors ${
 									// note the selected style here never gets used
-									selectedSpace?.id === space.id
+									selectedSpaceId === space.id
 										? "bg-theme-orange text-white"
 										: "text-gray-500 hover:bg-gray-100"
 								}`}
 								onClick={() => {
-									setSelectedSpace(space);
+									setSelectedSpaceId(space.id);
 								}}
 							>
 								{space.name}
@@ -61,4 +70,4 @@ const LeftColumn: FC<LeftColumnProps> = ({ spaces = [] }) => {
 	);
 };
 
-export default LeftColumn;
+export default SpacesList;

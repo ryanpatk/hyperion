@@ -12,12 +12,11 @@ import { useEffect, useCallback, useState, type FC } from "react";
 // 	// type DroppableProvided,
 // } from "@hello-pangea/dnd";
 
+import type { LinkResponse } from "../hooks/links-api";
 import Tile from "../components/Tile";
-import type { ITile } from "../types";
-import { MOCK_TILES } from "../mocks";
 
 interface GridProps {
-	tiles?: Array<ITile>;
+	links?: Array<LinkResponse>;
 }
 
 interface GridSize {
@@ -32,23 +31,22 @@ const DIRECTIONAL_KEYS = new Set([
 	"ArrowUp",
 ]);
 const NUM_COLUMNS = 6;
-const MOCK_DATA = [...MOCK_TILES, ...MOCK_TILES];
 const MAX_VISIBLE_TILES = 30;
 
-const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
+const Grid: FC<GridProps> = ({ links = [] }) => {
 	const [selectedTiles, setSelectedTiles] = useState<Array<number>>([0]);
 	const [gridSize, setGridSize] = useState<GridSize>({ rows: 0, cols: 0 });
 	const [isDragging, setIsDragging] = useState(false);
 
 	const numberEmptyTilesToAppend =
-		tiles.length < MAX_VISIBLE_TILES
-			? MAX_VISIBLE_TILES - tiles.length
-			: 6 - (tiles.length % 6);
+		links.length < MAX_VISIBLE_TILES
+			? MAX_VISIBLE_TILES - links.length
+			: 6 - (links.length % 6);
 	const emptyTiles = Array.from(
 		{ length: numberEmptyTilesToAppend },
 		() => ({})
 	);
-	const tilesFilled = [...tiles, ...emptyTiles];
+	const tilesFilled = [...links, ...emptyTiles];
 
 	useEffect(() => {
 		const handleResize = (): void => {
@@ -84,7 +82,7 @@ const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
 			isMultiSelect: boolean
 		): void => {
 			const { cols } = gridSize;
-			const maxIndex = tiles.length - 1;
+			const maxIndex = links.length - 1;
 
 			setSelectedTiles((previousSelected) => {
 				const lastSelected = previousSelected.at(-1) ?? 0;
@@ -112,7 +110,7 @@ const Grid: FC<GridProps> = ({ tiles = MOCK_DATA }) => {
 				return isMultiSelect ? [...previousSelected, newIndex] : [newIndex];
 			});
 		},
-		[gridSize, tiles.length]
+		[gridSize, links.length]
 	);
 
 	useEffect(() => {

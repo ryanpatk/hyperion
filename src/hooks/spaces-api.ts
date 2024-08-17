@@ -15,10 +15,10 @@ export interface NewSpaceData {
 
 export interface SpaceResponse {
 	id: number;
-	createdAt: string;
+	createdAt?: string;
 	name: string;
-	updatedAt: string;
-	userId: string;
+	updatedAt?: string;
+	userId?: string;
 }
 
 const queryKeys = {

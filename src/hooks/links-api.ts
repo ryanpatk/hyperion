@@ -13,18 +13,19 @@ export interface NewLinkData {
 	url: string;
 }
 
+// TODO: figure out better way to handle types on optimistic record
 export interface LinkResponse {
-	createdAt: string;
-	favicon: string;
-	id: number;
-	image: string;
-	label: string;
-	notes: string;
-	spaceId: number; // check -> conflicts with uuid?
-	title: string;
-	updatedAt: string;
+	createdAt?: string;
+	favicon?: string;
+	id: number | string;
+	image?: string;
+	label?: string;
+	notes?: string;
+	spaceId?: number; // check -> conflicts with uuid?
+	title?: string;
+	updatedAt?: string;
 	url: string;
-	userId: number; // check -> conflicts with uuid?
+	userId?: number; // check -> conflicts with uuid?
 }
 
 const queryKeys = {
