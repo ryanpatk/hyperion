@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, type FC } from "react";
-import { FiPlus } from "react-icons/fi";
 
 interface ExpandableInputProps {
 	onSubmit: (value: string) => void;
@@ -35,43 +34,43 @@ const ExpandableInput: FC<ExpandableInputProps> = ({ onSubmit }) => {
 	};
 
 	return (
-		<div ref={containerRef}>
+		<div
+			ref={containerRef}
+			className="py-1 hover:text-theme-yellow cursor-pointer text-gray-500"
+			onClick={() => {
+				setIsExpanded(true);
+			}}
+		>
 			{isExpanded ? (
 				<div className="flex items-center space-x-2">
-					<input
-						type="text"
-						value={inputValue}
-						onChange={(event) => {
-							setInputValue(event.target.value);
-						}}
-						className="border border-gray-300 rounded-sm px-3 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-400"
-						placeholder="Enter text..."
-						autoFocus
-					/>
-					<button
-						onClick={handleSubmit}
-						className="bg-blue-400 text-white px-4 py-1 rounded-sm hover:bg-blue-600 transition-colors"
-					>
-						Submit
-					</button>
+					<form onSubmit={handleSubmit}>
+						<input
+							type="text"
+							value={inputValue}
+							onChange={(event) => {
+								setInputValue(event.target.value);
+							}}
+							className="ml-0.5 border border-gray-300 px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-400"
+							placeholder="Enter text..."
+							autoFocus
+						/>
+						{/* <button
+							onClick={handleSubmit}
+							className="bg-blue-400 text-white px-4 py-1 rounded-sm hover:bg-blue-600 transition-colors"
+						>
+							Submit
+						</button> */}
+					</form>
 				</div>
 			) : (
 				<b
 					onClick={() => {
 						setIsExpanded(true);
 					}}
-					className="text-gray-500 hover:text-gray-700 cursor-pointer"
+					className="pl-2"
 				>
-					+ New Space
+					ADD NEW
 				</b>
-				// <button
-				// 	onClick={() => {
-				// 		setIsExpanded(true);
-				// 	}}
-				// 	className="w-8 h-8 bg-blue-400 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors"
-				// >
-				// 	<FiPlus size={20} />
-				// </button>
 			)}
 		</div>
 	);

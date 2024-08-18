@@ -1,4 +1,4 @@
-import { useMemo, type FC } from "react";
+import type { FC } from "react";
 
 import ExpandableInput from "./ExpandableInput";
 import { useCreateSpace, type SpaceResponse } from "../hooks/spaces-api";
@@ -16,50 +16,27 @@ const SpacesList: FC<SpacesListProps> = ({
 }) => {
 	const { mutateAsync: createSpace } = useCreateSpace();
 
-	const selectedSpace = useMemo((): SpaceResponse | null => {
-		if (!selectedSpaceId || !spaces?.length) {
-			return null;
-		}
-		return spaces.find((space) => space?.id === selectedSpaceId) || null;
-	}, [selectedSpaceId, spaces]);
-
 	return (
 		<div className="flex flex-col h-full">
 			<ul className="space-y-1">
-				{selectedSpace ? (
-					<li key={selectedSpace.id}>
+				{spaces.map((space) => (
+					<li key={space.id}>
 						<button
-							className="w-full text-left px-4 py-1 rounded-sm transition-colors bg-pink-400 text-white font-custom-1"
+							className={`w-full text-left px-2 py-1 rounded-sm transition-colors font-custom-1 ${
+								// note the selected style here never gets used
+								selectedSpaceId === space.id
+									? "bg-gray-600 text-white"
+									: "text-gray-500 hover:bg-gray-100"
+							}`}
 							onClick={() => {
-								setSelectedSpaceId(null);
+								setSelectedSpaceId(space.id);
 							}}
 						>
-							{selectedSpace.name}
+							{space.name}
 						</button>
 					</li>
-				) : null}
-				{spaces
-					.filter((space) => {
-						return selectedSpace ? selectedSpace.id !== space.id : true;
-					})
-					.map((space) => (
-						<li key={space.id}>
-							<button
-								className={`w-full text-left px-4 py-1 rounded-sm transition-colors font-custom-1 ${
-									// note the selected style here never gets used
-									selectedSpaceId === space.id
-										? "bg-pink-400 text-white"
-										: "text-gray-500 hover:bg-gray-100"
-								}`}
-								onClick={() => {
-									setSelectedSpaceId(space.id);
-								}}
-							>
-								{space.name}
-							</button>
-						</li>
-					))}
-				<div className="pl-4 absolute bottom-4">
+				))}
+				<div>
 					<ExpandableInput
 						onSubmit={(value: string): void => {
 							void createSpace({ name: value });

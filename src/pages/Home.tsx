@@ -1,7 +1,5 @@
 import { useEffect, useState, useMemo, type MouseEvent, type FC } from "react";
-import { FaRegCopyright } from "react-icons/fa";
 
-// import Grid from "../components/Grid";
 import LinkGrid from "../components/LinkGrid";
 import SpacesList from "../components/SpacesList";
 import { useMyProfile, useLogout } from "../hooks/auth-api";
@@ -10,12 +8,6 @@ import { usePastedValue } from "../hooks/keyboard";
 import { useCreateLink, useLinks, type LinkResponse } from "../hooks/links-api";
 import { usePrevious } from "../hooks/general";
 import isValidUrl from "../utils/is-valid-url";
-
-// const openAllLinksInActiveGroup = () => {
-// 	for (let i = 0; i < filteredLinks.length; i++) {
-// 		openLink(filteredLinks[i]);
-// 	}
-// };
 
 const UNSORTED_SPACE: SpaceResponse = {
 	id: 0,
@@ -36,6 +28,13 @@ export const Home: FC = () => {
 		return [UNSORTED_SPACE, ...(spaces || [])];
 	}, [spaces]);
 
+	const selectedSpace = useMemo((): SpaceResponse | null => {
+		if (!selectedSpaceId || !spaces?.length) {
+			return null;
+		}
+		return spaces.find((space) => space?.id === selectedSpaceId) || null;
+	}, [selectedSpaceId, spaces]);
+
 	const linksForSpace = useMemo((): Array<LinkResponse> => {
 		if (!links) {
 			return [];
@@ -53,11 +52,21 @@ export const Home: FC = () => {
 	useEffect(() => {
 		if (pastedValue && !previousPastedValue) {
 			if (isValidUrl(pastedValue)) {
-				createLink({ url: pastedValue });
+				if (selectedSpaceId) {
+					createLink({ url: pastedValue, spaceId: selectedSpaceId });
+				} else {
+					createLink({ url: pastedValue });
+				}
 			}
 			clearPastedValue();
 		}
-	}, [pastedValue, createLink, clearPastedValue, previousPastedValue]);
+	}, [
+		pastedValue,
+		createLink,
+		clearPastedValue,
+		previousPastedValue,
+		selectedSpaceId,
+	]);
 
 	const handleLogout = (event: MouseEvent<HTMLAnchorElement>): void => {
 		event.preventDefault();
@@ -80,7 +89,10 @@ export const Home: FC = () => {
 			<div className="flex items-center justify-center">
 				{/* <div className="w-full aspect-[6/5] max-w-4xl max-h-[90vh] overflow-auto shadow-md"> */}
 				{/* <Grid links={linksForSpace} /> */}
-				<LinkGrid links={linksForSpace} />
+				<LinkGrid
+					links={linksForSpace}
+					selectedSpaceName={selectedSpace?.name || "Unsorted"}
+				/>
 				{/* </div> */}
 			</div>
 
@@ -97,7 +109,7 @@ export const Home: FC = () => {
 					<a
 						href="#"
 						onClick={handleLogout}
-						className="text-white hover:text-gray-700 cursor-pointer"
+						className="text-white hover:text-theme-yellow cursor-pointer"
 					>
 						<b>Logout</b>
 					</a>

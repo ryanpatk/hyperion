@@ -11,6 +11,7 @@ import axiosInstance from "../axios-instance";
 
 export interface NewLinkData {
 	url: string;
+	spaceId?: number;
 }
 
 export interface LinkMetadata {
@@ -53,11 +54,11 @@ const fetchUrlMetadata = async (url: string): Promise<Array<LinkMetadata>> => {
 	return response.data;
 };
 
-async function createLink(NewLinkData: NewLinkData): Promise<LinkResponse> {
-	const response = await axiosInstance.post<LinkResponse>(
-		"/links",
-		NewLinkData
-	);
+async function createLink(newLinkData: NewLinkData): Promise<LinkResponse> {
+	const response = await axiosInstance.post<LinkResponse>("/links", {
+		url: newLinkData.url,
+		["space_id"]: newLinkData.spaceId,
+	});
 	return response.data;
 }
 
