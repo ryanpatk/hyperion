@@ -210,44 +210,51 @@ const LinkGrid: FC<LinkGridProps> = ({ links = [], selectedSpaceName }) => {
 			}
 		};
 
+		// event: FocusEvent
+		const handleFocus = (): void => {
+			setCtrlKeyPressed(false);
+		};
+
+		window.addEventListener("focus", handleFocus);
 		window.addEventListener("keydown", handleKeyDown);
 		window.addEventListener("keyup", handleKeyUp);
 		return () => {
+			window.removeEventListener("focus", handleFocus);
 			window.removeEventListener("keydown", handleKeyDown);
 			window.removeEventListener("keyup", handleKeyUp);
 		};
 	}, [moveSelection, openAllSelectedLinks]);
 
 	return (
-		<div className="px-4 pt-2 min-h-screen">
-			<div className="flex flex-1 flex-row justify-between align-middle">
-				<h1 className="text-3xl text-white font-custom-1 font-bold mb-4">
-					{selectedSpaceName}
-				</h1>
-
-				<div className="flex flex-row justify-between align-middle">
-					<p
-						className={`font-bold ${ctrlKeyPressed ? "text-white" : "text-gray-400"}`}
-					>
-						CMD
-					</p>
-					{ctrlKeyPressed ? (
-						<p className="ml-2 font-bold text-theme-yellow">RETURN</p>
-					) : null}
+		<div className="flex flex-col h-screen">
+			<div className="px-4 py-2 bg-gray-700 z-10">
+				<div className="flex flex-row justify-between items-center">
+					<h1 className="text-3xl text-white font-custom-1 font-bold">
+						{selectedSpaceName}
+					</h1>
+					<div className="flex flex-row items-center">
+						<p
+							className={`font-bold ${ctrlKeyPressed ? "text-white" : "text-gray-400"}`}
+						>
+							CMD
+						</p>
+						{ctrlKeyPressed && (
+							<p className="ml-2 font-bold text-theme-yellow">RETURN</p>
+						)}
+					</div>
 				</div>
 			</div>
-
-			<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-				{links.map((link, index) => {
-					return (
+			<div className="flex-1 overflow-y-auto px-4 py-2">
+				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-10">
+					{links.map((link, index) => (
 						<LinkItem
 							key={link.id}
 							link={link}
 							isSelected={selectedTiles.includes(index)}
 							ctrlKeyPressed={ctrlKeyPressed}
 						/>
-					);
-				})}
+					))}
+				</div>
 			</div>
 		</div>
 	);
