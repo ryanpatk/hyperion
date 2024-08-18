@@ -56,8 +56,9 @@ const LinkItem: FC<LinkItemProps> = ({
 	return (
 		<div
 			key={link?.id}
-			className={`flex flex-col items-center bg-gray-500 rounded-sm shadow-sm hover:shadow-lg transition-shadow duration-100
-			${isSelected ? "ring-4 ring-theme-yellow z-10" : null}`}
+			className={`flex flex-col items-center bg-gray-400 rounded-sm shadow-sm hover:shadow-lg transition-shadow duration-100
+			${isSelected ? "ring-4 ring-theme-yellow" : null}
+			${isSelected && ctrlKeyPressed ? "bg-theme-yellow" : "bg-gray-400"}`}
 		>
 			<div className="h-full flex items-center justify-center overflow-hidden">
 				<img
@@ -71,7 +72,7 @@ const LinkItem: FC<LinkItemProps> = ({
 				/>
 			</div>
 			<p
-				className={`text-xs text-align-left text-black truncate font-custom-1 w-full px-1 hover:bg-theme-yellow hover:cursor-pointer ${isSelected && ctrlKeyPressed ? "bg-theme-yellow" : "bg-theme-green"}`}
+				className={`text-xs text-align-left text-black truncate font-custom-1 w-full px-1 hover:bg-theme-yellow hover:cursor-pointer ${isSelected && ctrlKeyPressed ? "bg-theme-yellow" : "bg-gray-200"}`}
 				onClick={() => {
 					if (link?.url) {
 						openLink(link?.url);
@@ -225,9 +226,48 @@ const LinkGrid: FC<LinkGridProps> = ({ links = [], selectedSpaceName }) => {
 		};
 	}, [moveSelection, openAllSelectedLinks]);
 
+	// fallback - fixed header
+	// return (
+	// 	<div className="flex flex-col h-screen">
+	// 		<div id="grid-header" className="px-4 py-2 bg-gray-700 z-10">
+	// 			<div className="flex flex-row justify-between items-center">
+	// 				<h1 className="text-3xl text-white font-custom-1 font-bold">
+	// 					{selectedSpaceName}
+	// 				</h1>
+	// 				<div className="flex flex-row items-center">
+	// 					<p
+	// 						className={`font-bold ${ctrlKeyPressed ? "text-white" : "text-gray-400"}`}
+	// 					>
+	// 						CMD
+	// 					</p>
+	// 					{ctrlKeyPressed && (
+	// 						<p className="ml-2 font-bold text-theme-yellow">RETURN</p>
+	// 					)}
+	// 				</div>
+	// 			</div>
+	// 		</div>
+	// 		<div id="grid-body" className="flex-1 overflow-y-auto px-4 py-2">
+	// 			<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-10">
+	// 				{links.map((link, index) => (
+	// 					<LinkItem
+	// 						key={link.id}
+	// 						link={link}
+	// 						isSelected={selectedTiles.includes(index)}
+	// 						ctrlKeyPressed={ctrlKeyPressed}
+	// 					/>
+	// 				))}
+	// 			</div>
+	// 		</div>
+	// 	</div>
+	// );
+
+	// experimental - absolute header with blur
 	return (
-		<div className="flex flex-col h-screen">
-			<div className="px-4 py-2 bg-gray-700 z-10">
+		<div className="relative h-screen overflow-hidden">
+			<div
+				id="grid-header"
+				className="absolute top-0 left-0 right-0 px-4 py-2 bg-gray-700 bg-opacity-60 backdrop-filter backdrop-blur-md z-999"
+			>
 				<div className="flex flex-row justify-between items-center">
 					<h1 className="text-3xl text-white font-custom-1 font-bold">
 						{selectedSpaceName}
@@ -244,7 +284,7 @@ const LinkGrid: FC<LinkGridProps> = ({ links = [], selectedSpaceName }) => {
 					</div>
 				</div>
 			</div>
-			<div className="flex-1 overflow-y-auto px-4 py-2">
+			<div id="grid-body" className="h-full overflow-y-auto pt-16 px-4 pb-2">
 				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-10">
 					{links.map((link, index) => (
 						<LinkItem
