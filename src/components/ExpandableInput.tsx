@@ -44,26 +44,34 @@ const ExpandableInput: FC<ExpandableInputProps> = ({ onSubmit }) => {
 						onChange={(event) => {
 							setInputValue(event.target.value);
 						}}
-						className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+						className="border border-gray-300 rounded-sm px-3 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-400"
 						placeholder="Enter text..."
 						autoFocus
 					/>
 					<button
 						onClick={handleSubmit}
-						className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+						className="bg-blue-400 text-white px-4 py-1 rounded-sm hover:bg-blue-600 transition-colors"
 					>
 						Submit
 					</button>
 				</div>
 			) : (
-				<button
+				<b
 					onClick={() => {
 						setIsExpanded(true);
 					}}
-					className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors"
+					className="text-gray-500 hover:text-gray-700 cursor-pointer"
 				>
-					<FiPlus size={20} />
-				</button>
+					+ New Space
+				</b>
+				// <button
+				// 	onClick={() => {
+				// 		setIsExpanded(true);
+				// 	}}
+				// 	className="w-8 h-8 bg-blue-400 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors"
+				// >
+				// 	<FiPlus size={20} />
+				// </button>
 			)}
 		</div>
 	);

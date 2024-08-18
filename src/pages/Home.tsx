@@ -1,6 +1,8 @@
 import { useEffect, useState, useMemo, type MouseEvent, type FC } from "react";
+import { FaRegCopyright } from "react-icons/fa";
 
-import Grid from "../components/Grid";
+// import Grid from "../components/Grid";
+import LinkGrid from "../components/LinkGrid";
 import SpacesList from "../components/SpacesList";
 import { useMyProfile, useLogout } from "../hooks/auth-api";
 import { useSpaces, type SpaceResponse } from "../hooks/spaces-api";
@@ -65,9 +67,9 @@ export const Home: FC = () => {
 	const { username } = myProfile || {};
 
 	return (
-		<div className="flex w-full h-screen bg-gray-100">
+		<div className="flex w-full h-screen bg-gray-700">
 			{/* left column area */}
-			<div className="flex-1 basis-0 min-w-[200px] h-full">
+			<div className="flex-1 basis-0 min-w-[200px] max-w-[200px] h-full">
 				<SpacesList
 					spaces={spacesWithUnsorted}
 					selectedSpaceId={selectedSpaceId}
@@ -75,22 +77,27 @@ export const Home: FC = () => {
 				/>
 			</div>
 
-			<div className="flex items-center justify-center p-4">
-				<div className="w-full aspect-[6/5] max-w-4xl max-h-[90vh] overflow-auto shadow-md">
-					<Grid links={linksForSpace} />
-				</div>
+			<div className="flex items-center justify-center">
+				{/* <div className="w-full aspect-[6/5] max-w-4xl max-h-[90vh] overflow-auto shadow-md"> */}
+				{/* <Grid links={linksForSpace} /> */}
+				<LinkGrid links={linksForSpace} />
+				{/* </div> */}
 			</div>
 
-			{/* right column area */}
-			<div className="flex flex-1 basis-0 min-w-[200px] h-full justify-end p-4">
-				<div className="text-right">
-					<p className="text-gray-500">
-						Logged in as <b>{username}</b>
-					</p>
+			{/* <div className="flex flex-1 basis-0 min-w-[200px] h-full justify-end p-2"> */}
+			{/* Right column */}
+			{/* </div> */}
+
+			<div className="absolute bottom-0 w-screen bg-gray-600 flex flex-row justify-end">
+				{/* <h1 className="text-md font-bold mb-4 flex items-center text-gray-400">
+					SuperLinks <FaRegCopyright style={{ marginLeft: "2px" }} />
+				</h1> */}
+				<div className="text-right flex flex-row pr-2">
+					<p className="text-white pr-2">Logged in as {username} |</p>
 					<a
 						href="#"
 						onClick={handleLogout}
-						className="text-gray-500 hover:text-gray-700 cursor-pointer"
+						className="text-white hover:text-gray-700 cursor-pointer"
 					>
 						<b>Logout</b>
 					</a>

@@ -24,13 +24,12 @@ const SpacesList: FC<SpacesListProps> = ({
 	}, [selectedSpaceId, spaces]);
 
 	return (
-		<div className="flex flex-col h-full py-4 pl-4">
-			<h2 className="text-xl font-bold mb-4 text-gray-500">SuperLinks</h2>
+		<div className="flex flex-col h-full">
 			<ul className="space-y-1">
 				{selectedSpace ? (
 					<li key={selectedSpace.id}>
 						<button
-							className="w-full text-left px-4 py-2 rounded-sm transition-colors bg-theme-orange text-white"
+							className="w-full text-left px-4 py-1 rounded-sm transition-colors bg-pink-400 text-white font-custom-1"
 							onClick={() => {
 								setSelectedSpaceId(null);
 							}}
@@ -46,10 +45,10 @@ const SpacesList: FC<SpacesListProps> = ({
 					.map((space) => (
 						<li key={space.id}>
 							<button
-								className={`w-full text-left px-4 py-2 rounded-sm transition-colors ${
+								className={`w-full text-left px-4 py-1 rounded-sm transition-colors font-custom-1 ${
 									// note the selected style here never gets used
 									selectedSpaceId === space.id
-										? "bg-theme-orange text-white"
+										? "bg-pink-400 text-white"
 										: "text-gray-500 hover:bg-gray-100"
 								}`}
 								onClick={() => {
@@ -60,11 +59,13 @@ const SpacesList: FC<SpacesListProps> = ({
 							</button>
 						</li>
 					))}
-				<ExpandableInput
-					onSubmit={(value: string): void => {
-						void createSpace({ name: value });
-					}}
-				/>
+				<div className="pl-4 absolute bottom-4">
+					<ExpandableInput
+						onSubmit={(value: string): void => {
+							void createSpace({ name: value });
+						}}
+					/>
+				</div>
 			</ul>
 		</div>
 	);

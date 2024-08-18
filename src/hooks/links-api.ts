@@ -13,6 +13,13 @@ export interface NewLinkData {
 	url: string;
 }
 
+export interface LinkMetadata {
+	id: number;
+	title: string;
+	images: Array<string>;
+	favicons: Array<string>;
+}
+
 // TODO: figure out better way to handle types on optimistic record
 export interface LinkResponse {
 	createdAt?: string;
@@ -30,12 +37,21 @@ export interface LinkResponse {
 
 const queryKeys = {
 	links: ["links"] as const,
+	metadata: ["link_metadata"] as const,
 };
 
 async function fetchLinks(): Promise<Array<LinkResponse>> {
 	const response = await axiosInstance.get<Array<LinkResponse>>("/links");
 	return response.data;
 }
+
+const fetchUrlMetadata = async (url: string): Promise<Array<LinkMetadata>> => {
+	const response = await axiosInstance.get<Array<LinkMetadata>>(
+		`/url-scraper?&url=${encodeURIComponent(url)}`
+	);
+
+	return response.data;
+};
 
 async function createLink(NewLinkData: NewLinkData): Promise<LinkResponse> {
 	const response = await axiosInstance.post<LinkResponse>(
@@ -49,6 +65,13 @@ export function useLinks(): UseQueryResult<Array<LinkResponse>> {
 	return useQuery({
 		queryKey: queryKeys.links,
 		queryFn: () => fetchLinks(),
+	});
+}
+
+export function useLinkMetadata(linkUrl: string): UseQueryResult<LinkMetadata> {
+	return useQuery({
+		queryKey: [queryKeys.metadata, linkUrl],
+		queryFn: () => fetchUrlMetadata(linkUrl),
 	});
 }
 

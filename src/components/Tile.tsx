@@ -35,6 +35,8 @@ const Tile: React.FC<TileProps> = ({ tile }) => {
 
 	const { favicons = [], images = [] } = data || {};
 
+	console.log("data", data);
+
 	// const handleClick = (): void => {
 	// 	openLink(tile.url);
 	// };
@@ -54,12 +56,30 @@ const Tile: React.FC<TileProps> = ({ tile }) => {
 
 	return (
 		<div className="border border-gray w-full h-56 flex items-center justify-center">
-			<img
-				src={isLoading ? null : images[0] || getBestFavicon(favicons)}
+			{/* <img
+				src={isLoading ? null : getBestFavicon(favicons)}
 				className="max-w-full max-h-full object-scale-down"
-			/>
+			/> */}
+			<p className="font-custom-1">{data?.title}</p>
 		</div>
 	);
+
+	// return (
+	// 	<div className="border border-gray w-full h-56 relative">
+	// 		<div className="flex inset-0 flex items-center justify-center w-full h-full">
+	// 			{/* {!isLoading && ( */}
+	// 			<img
+	// 				src={getBestFavicon(favicons)}
+	// 				className="w-16 h-16 object-contain"
+	// 				alt="Favicon"
+	// 			/>
+	// 			{/* )} */}
+	// 		</div>
+	// 		<p className="absolute bottom-0 left-0 p-2 w-full truncate">
+	// 			{data?.title}
+	// 		</p>
+	// 	</div>
+	// );
 };
 
 export default Tile;

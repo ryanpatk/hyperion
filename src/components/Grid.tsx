@@ -48,6 +48,8 @@ const Grid: FC<GridProps> = ({ links = [] }) => {
 	);
 	const tilesFilled = [...links, ...emptyTiles];
 
+	console.log(links);
+
 	useEffect(() => {
 		const handleResize = (): void => {
 			const aspectRatio = 1.5;
