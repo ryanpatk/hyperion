@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, type MouseEvent, type FC } from "react";
+import { FaStarOfLife } from "react-icons/fa6";
 
 import LinkGrid from "../components/LinkGrid";
 import SpacesList from "../components/SpacesList";
@@ -78,7 +79,7 @@ export const Home: FC = () => {
 	return (
 		<div className="flex w-full h-screen bg-gray-700">
 			{/* left column area */}
-			<div className="flex-1 basis-0 min-w-[200px] max-w-[200px] h-full">
+			<div className="flex-1 basis-0 min-w-[200px] max-w-[200px] h-full pl-10 pt-12">
 				<SpacesList
 					spaces={spacesWithUnsorted}
 					selectedSpaceId={selectedSpaceId}
@@ -98,12 +99,23 @@ export const Home: FC = () => {
 
 			{/* <div className="flex flex-1 basis-0 min-w-[200px] h-full justify-end p-2"> */}
 			{/* Right column */}
-			{/* </div> */}
+			<div className="flex-1 basis-0 min-w-[200px] max-w-[200px] h-full pr-10 pt-12">
+				{/* <SpacesList
+					spaces={spacesWithUnsorted}
+					selectedSpaceId={selectedSpaceId}
+					setSelectedSpaceId={setSelectedSpaceId}
+				/> */}
+			</div>
 
-			<div className="absolute bottom-0 w-screen bg-gray-600 flex flex-row justify-end">
+			<div className="absolute bottom-0 w-screen bg-gray-600 flex flex-row justify-between items-center">
 				{/* <h1 className="text-md font-bold mb-4 flex items-center text-gray-400">
 					SuperLinks <FaRegCopyright style={{ marginLeft: "2px" }} />
 				</h1> */}
+				<div className="items-center flex flex-row">
+					<FaStarOfLife className="ml-2 text-theme-yellow animate-spin-very-slow" />
+					<p className="ml-1 text-white font-medium">SuperLinks</p>
+				</div>
+
 				<div className="text-right flex flex-row pr-2">
 					<p className="text-white pr-2">Logged in as {username} |</p>
 					<a

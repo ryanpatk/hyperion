@@ -56,11 +56,11 @@ const LinkItem: FC<LinkItemProps> = ({
 	return (
 		<div
 			key={link?.id}
-			className={`flex flex-col items-center bg-gray-400 rounded-sm shadow-sm hover:shadow-lg transition-shadow duration-100
-			${isSelected ? "ring-4 ring-theme-yellow" : null}
-			${isSelected && ctrlKeyPressed ? "bg-theme-yellow" : "bg-gray-400"}`}
+			className={`flex flex-col items-center rounded-sm shadow-sm hover:shadow-lg transition-shadow duration-100 rainbow-dispersion ring-4
+      ${isSelected ? " ring-theme-yellow" : "ring-gray-500"}
+      ${isSelected && ctrlKeyPressed ? "bg-theme-yellow" : "bg-gray-500"}`}
 		>
-			<div className="h-full flex items-center justify-center overflow-hidden">
+			<div className="h-full flex items-center justify-center overflow-hidden relative z-10">
 				<img
 					src={linkMetadata?.images[0] || linkMetadata?.favicons[0]}
 					alt={linkMetadata?.title}
@@ -71,16 +71,33 @@ const LinkItem: FC<LinkItemProps> = ({
 					}}
 				/>
 			</div>
-			<p
-				className={`text-xs text-align-left text-black truncate font-custom-1 w-full px-1 hover:bg-theme-yellow hover:cursor-pointer ${isSelected && ctrlKeyPressed ? "bg-theme-yellow" : "bg-gray-200"}`}
+			<div
+				//  note: this will change how the bg renders: z-10 (for brighter contrast)
+				className={`flex flex-1 flex-row px-1 hover:cursor-pointer w-full ${
+					isSelected && ctrlKeyPressed
+						? "bg-theme-yellow text-black"
+						: "bg-gray-500 text-gray-200"
+				} hover:bg-theme-yellow hover:text-black `}
 				onClick={() => {
 					if (link?.url) {
 						openLink(link?.url);
 					}
 				}}
 			>
-				{linkMetadata?.title}
-			</p>
+				{/* todo: this img tag has some issues inheriting the hover styles from its parent */}
+				<img
+					src={linkMetadata?.favicons[0]}
+					alt={linkMetadata?.title}
+					className="object-contain w-5 pr-1"
+					onError={(event) => {
+						const target = event.target as HTMLImageElement;
+						target.src = "https://via.placeholder.com/150?text=No+Image";
+					}}
+				/>
+				<p className="text-xs text-align-left truncate font-custom-1 w-full relative">
+					{linkMetadata?.title}
+				</p>
+			</div>
 		</div>
 	);
 };
@@ -269,9 +286,10 @@ const LinkGrid: FC<LinkGridProps> = ({ links = [], selectedSpaceName }) => {
 				className="absolute top-0 left-0 right-0 px-4 py-2 bg-gray-700 bg-opacity-60 backdrop-filter backdrop-blur-md z-999"
 			>
 				<div className="flex flex-row justify-between items-center">
-					<h1 className="text-3xl text-white font-custom-1 font-bold">
+					<h1 className="text-2xl text-white font-custom-1 font-bold">
 						{selectedSpaceName}
 					</h1>
+
 					<div className="flex flex-row items-center">
 						<p
 							className={`font-bold ${ctrlKeyPressed ? "text-white" : "text-gray-400"}`}
