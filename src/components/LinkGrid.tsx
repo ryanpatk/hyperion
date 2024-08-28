@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, type FC } from "react";
-
+import { Droppable, Draggable } from "@hello-pangea/dnd";
 // import {
 // 	DragDropContext,
 // 	Droppable,
@@ -31,6 +31,7 @@ interface LinkItemProps {
 interface LinkGridProps {
 	links: Array<Link>;
 	selectedSpaceName: string | null;
+	onLinkDrop: (linkId: string, spaceId: string) => void;
 }
 
 interface GridSize {
@@ -102,7 +103,11 @@ const LinkItem: FC<LinkItemProps> = ({
 	);
 };
 
-const LinkGrid: FC<LinkGridProps> = ({ links = [], selectedSpaceName }) => {
+const LinkGrid: FC<LinkGridProps> = ({
+	links = [],
+	selectedSpaceName,
+	onLinkDrop,
+}) => {
 	const [selectedTiles, setSelectedTiles] = useState<Array<number>>([0]);
 	const [gridSize, setGridSize] = useState<GridSize>({ rows: 0, cols: 0 });
 	const [ctrlKeyPressed, setCtrlKeyPressed] = useState<boolean>(false);
@@ -302,18 +307,41 @@ const LinkGrid: FC<LinkGridProps> = ({ links = [], selectedSpaceName }) => {
 					</div>
 				</div>
 			</div>
-			<div id="grid-body" className="h-full overflow-y-auto pt-16 px-4 pb-2">
-				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-10">
-					{links.map((link, index) => (
-						<LinkItem
-							key={link.id}
-							link={link}
-							isSelected={selectedTiles.includes(index)}
-							ctrlKeyPressed={ctrlKeyPressed}
-						/>
-					))}
-				</div>
-			</div>
+			<Droppable droppableId="linkGrid" direction="horizontal">
+				{(provided) => (
+					<div
+						id="grid-body"
+						className="h-full overflow-y-auto pt-16 px-4 pb-2"
+						ref={provided.innerRef}
+						{...provided.droppableProps}
+					>
+						<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-10">
+							{links.map((link, index) => (
+								<Draggable
+									key={link.id}
+									draggableId={`link-${link.id}`}
+									index={index}
+								>
+									{(provided) => (
+										<div
+											ref={provided.innerRef}
+											{...provided.draggableProps}
+											{...provided.dragHandleProps}
+										>
+											<LinkItem
+												link={link}
+												isSelected={selectedTiles.includes(index)}
+												ctrlKeyPressed={ctrlKeyPressed}
+											/>
+										</div>
+									)}
+								</Draggable>
+							))}
+							{provided.placeholder}
+						</div>
+					</div>
+				)}
+			</Droppable>
 		</div>
 	);
 };
